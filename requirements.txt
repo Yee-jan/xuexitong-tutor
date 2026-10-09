@@ -1,0 +1,10 @@
+# 运行时依赖
+# 浏览器自动化（唯一必需依赖）
+playwright>=1.40
+
+# 安装后还需要下载浏览器内核（首次一次即可）：
+#   python -m playwright install chromium
+#
+# 说明：
+# - HTTP 调用（LLM 接口）与配置读取全部使用 Python 标准库实现，
+#   不依赖 requests / httpx / PyYAML / openai SDK，避免环境冲突。

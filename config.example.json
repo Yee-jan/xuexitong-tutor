@@ -1,0 +1,86 @@
+{
+  "_说明": "复制成 config.json 后按需修改；所有字段都有内置默认值，留空即用默认。环境变量优先级最高。",
+
+  "browser": {
+    "user_data_dir": ".state/browser",
+    "headless": false,
+    "slow_mo_ms": 0,
+    "_channel说明": "留空=用 playwright 自带 chromium；填 chrome=用本机已装的 Google Chrome（更不易被风控识别）",
+    "channel": "",
+    "locale": "zh-CN",
+    "timeout_ms": 30000,
+    "viewport_width": 1440,
+    "viewport_height": 900,
+    "user_agent": "",
+    "_block_resources说明": "加速页面加载。默认不拦 image：实测拦图片会让登录页按钮/二维码变白。要极限提速可自行加回 \"image\"",
+    "block_resources": ["font", "media"]
+  },
+
+  "login": {
+    "login_url": "https://passport2.chaoxing.com/login?fid=&newversion=true&refer=https%3A%2F%2Fi.chaoxing.com",
+    "home_url": "https://i.chaoxing.com",
+    "manual_login_timeout_s": 300,
+    "_auto_fill_credentials说明": "true 时会尝试用 XX_USERNAME / XX_PASSWORD 自动提交登录；默认 false，推荐扫码",
+    "auto_fill_credentials": false
+  },
+
+  "llm": {
+    "_preset可选": ["deepseek", "openai", "dashscope", "moonshot", "zhipu", "ollama", "mock", "custom"],
+    "preset": "deepseek",
+    "base_url": "https://api.deepseek.com/v1",
+    "model": "deepseek-chat",
+    "api_key": "",
+    "api_key_env": "XX_API_KEY",
+    "temperature": 0.1,
+    "max_tokens": 1024,
+    "timeout_s": 90,
+    "retries": 3,
+    "concurrency": 3,
+    "_batch_size说明": "每次请求塞几道题；越大越省 token（system prompt 只发一次），但太长容易漏答",
+    "batch_size": 6,
+    "_max_tokens_per_assignment说明": "一次作业的 token 熔断上限，超过就停止调用模型直接报错",
+    "max_tokens_per_assignment": 60000,
+    "disable_reasoning": true,
+    "system_prompt": ""
+  },
+
+  "store": {
+    "_说明": "本地答案库（SQLite）。相同/相似题目直接复用，这是省 token 的主要手段",
+    "path": ".state/answers.db",
+    "persist": true,
+    "_similarity_threshold说明": "题干 3-gram Jaccard 阈值；同题≈1.0，加噪版≈0.68，无关题≈0.0，默认 0.85 只放行小改动",
+    "similarity_threshold": 0.85
+  },
+
+  "solver": {
+    "use_cache": true,
+    "use_similarity": true,
+    "_use_page_answers说明": "已提交作业的复习页把标准答案印在 .rightAnswerContent 上，抓下来直接当答案（零 token）。false=完全忽略",
+    "use_page_answers": true,
+    "_save_page_answers说明": "把页面标准答案写进本地题库，供以后同题复用",
+    "save_page_answers": true,
+    "min_confidence": 0.0,
+    "fill_multiple_blanks": true,
+    "short_answer_max_chars": 1200,
+    "parse_retry": 1
+  },
+
+  "answer": {
+    "enabled": true,
+    "_submit说明": "false=只填答案并保存，不提交（默认，符合“提交我来”）；true=填完自动提交",
+    "submit": false,
+    "confirm_before_submit": true,
+    "min_delay_ms": 300,
+    "max_delay_ms": 1200,
+    "save_each_question": true,
+    "js_fallback": true
+  },
+
+  "output": {
+    "dir": "out",
+    "dump_questions": true,
+    "dump_answers": true,
+    "dump_dom": true,
+    "log_level": "INFO"
+  }
+}

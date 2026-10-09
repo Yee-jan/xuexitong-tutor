@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>ARIA 答题页（新版 doWork）仿真夹具</title>
+<!--
+  为什么有这个夹具
+  =================
+  新版学习通 /mooc-ans/mooc2/work/dowork 的选项【不是原生表单控件】：
+      <div class="answerBg" role="radio" onclick="addChoice(this)">
+        <span data="E" class="choice<qid> num_option fl">A</span>
+        <div class="fl answer_p"><p>正文</p></div>
+      </div>
+  后果（真机上真实发生过）：
+    1. EXTRACT_JS 只认 input[type=radio]，73 道题整体被丢弃 -> 「没抓到任何题目」；
+    2. 回填时框架【自己往隐藏域写字符串】，页面自己的 handler 才认，
+       复核发现多选题只剩最后一个字母、B 型题隐藏域全空 —— 而日志是「成功 73/失败 0」。
+
+  这个夹具把上面每一条都钉住：
+    - 选项字母故意和屏显文字【不一致】（data 才是权威）：
+        屏显 A -> data E，屏显 B -> data B，屏显 C -> data D，屏显 D -> data A
+      所以按屏显文字点必错，只有读 data 才可能全对。
+    - 隐藏域由【页面自己的 addChoice / addMultipleChoice】写，框架不该直接写。
+    - B 型题的隐藏域是 JSON 数组字符串：[{"name":1,"content":"C"}, ...]。
+    - saveWork() 只置 window.__saved，绝不置 window.__submitted（框架只暂存不提交）。
+
+  结构照抄真实页面；**题干与选项文本全部是合成占位串**，不含任何真实试题或答案。
+-->
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; margin: 24px; }
+  .questionLi { border-bottom: 1px solid #ddd; padding: 12px 0; }
+  .answerBg { padding: 4px 0; cursor: pointer; }
+  .answerBg .num_option, .answerBg .num_option_dx { display: inline-block; width: 22px; }
+  .answer_p { display: inline-block; }
+  .check_answer, .check_answer_dx { color: #d00; font-weight: bold; }
+  .B-answerCon span { display: inline-block; padding: 2px 8px; margin-right: 6px;
+                      border: 1px solid #aaa; cursor: pointer; }
+  .B-answerCon span.check_answer { background: #ffe0e0; }
+  #saveBar { position: fixed; right: 16px; bottom: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ============================ 单选题 ============================ -->
+<div class="padBom50 questionLi fontLabel singleQuesId" typename="单选题"
+     id="question900001" data="900001" tabindex="0" role="option" aria-label="题目 1. ">
+  <h3 class="mark_name colorDeep fontLabel workTextWrap" tabindex="0">
+    1. <span class="colorShallow">(单选题)</span> 合成占位题干一：( )
+  </h3>
+  <div class="clear"></div>
+  <input type="hidden" id="answertype900001" name="answertype900001" value="0">
+  <input type="hidden" id="answer900001" name="answer900001" value="">
+  <div class="stem_answer qtDetail">
+    <div class="clearfix answerBg workTextWrap" onclick="addChoice(this);"
+         onkeydown="addChoiceKeyDown(this)" tabindex="0" role="radio"
+         aria-label="E 合成选项文字戊选择" qid="900001" qtype="0">
+      <span aria-hidden="true" data="E" class="choice900001 num_option fl " tabindex="-1">A</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成选项文字戊</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addChoice(this);"
+         onkeydown="addChoiceKeyDown(this)" tabindex="0" role="radio"
+         aria-label="B 合成选项文字乙选择" qid="900001" qtype="0">
+      <span aria-hidden="true" data="B" class="choice900001 num_option fl " tabindex="-1">B</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成选项文字乙</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addChoice(this);"
+         onkeydown="addChoiceKeyDown(this)" tabindex="0" role="radio"
+         aria-label="D 合成选项文字丁选择" qid="900001" qtype="0">
+      <span aria-hidden="true" data="D" class="choice900001 num_option fl " tabindex="-1">C</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成选项文字丁</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addChoice(this);"
+         onkeydown="addChoiceKeyDown(this)" tabindex="0" role="radio"
+         aria-label="A 合成选项文字甲选择" qid="900001" qtype="0">
+      <span aria-hidden="true" data="A" class="choice900001 num_option fl " tabindex="-1">D</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成选项文字甲</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ 多选题 ============================ -->
+<div class="padBom50 questionLi fontLabel singleQuesId" typename="多选题"
+     id="question900002" data="900002" tabindex="0" role="option" aria-label="题目 2. ">
+  <h3 class="mark_name colorDeep fontLabel workTextWrap" tabindex="0">
+    2. <span class="colorShallow">(多选题)</span> 合成占位题干二：（ ）
+  </h3>
+  <div class="clear"></div>
+  <input type="hidden" id="answertype900002" name="answertype900002" value="1">
+  <input type="hidden" id="answer900002" name="answer900002" value="">
+  <div class="stem_answer qtDetail ">
+    <div class="clearfix answerBg workTextWrap" onclick="addMultipleChoice(this);"
+         onkeydown="addMultipleChoiceKeyDown(this)" tabindex="0" role="checkbox"
+         aria-label="A 合成多选甲选择" qid="900002" qtype="1">
+      <span aria-hidden="true" data="A" class="choice900002 num_option_dx fl " tabindex="-1">A</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成多选甲</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addMultipleChoice(this);"
+         onkeydown="addMultipleChoiceKeyDown(this)" tabindex="0" role="checkbox"
+         aria-label="B 合成多选乙选择" qid="900002" qtype="1">
+      <span aria-hidden="true" data="B" class="choice900002 num_option_dx fl " tabindex="-1">B</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成多选乙</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addMultipleChoice(this);"
+         onkeydown="addMultipleChoiceKeyDown(this)" tabindex="0" role="checkbox"
+         aria-label="C 合成多选丙选择" qid="900002" qtype="1">
+      <span aria-hidden="true" data="C" class="choice900002 num_option_dx fl " tabindex="-1">C</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成多选丙</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addMultipleChoice(this);"
+         onkeydown="addMultipleChoiceKeyDown(this)" tabindex="0" role="checkbox"
+         aria-label="D 合成多选丁选择" qid="900002" qtype="1">
+      <span aria-hidden="true" data="D" class="choice900002 num_option_dx fl " tabindex="-1">D</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成多选丁</p></div>
+    </div>
+    <div class="clearfix answerBg workTextWrap" onclick="addMultipleChoice(this);"
+         onkeydown="addMultipleChoiceKeyDown(this)" tabindex="0" role="checkbox"
+         aria-label="E 合成多选戊选择" qid="900002" qtype="1">
+      <span aria-hidden="true" data="E" class="choice900002 num_option_dx fl " tabindex="-1">E</span>
+      <div aria-hidden="true" class="fl answer_p" tabindex="-1"><p>合成多选戊</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ B 型配伍题 ============================ -->
+<div class="padBom50 questionLi fontLabel singleQuesId" typename="B 型题"
+     id="question900003" data="900003" tabindex="0" role="option" aria-label="题目 3. ">
+  <h3 class="mark_name colorDeep fontLabel workTextWrap" tabindex="0">
+    3. <span class="colorShallow">(B 型题)</span> （1～2 共用备选答案）
+  </h3>
+  <div class="clear"></div>
+  <input type="hidden" id="answertype900003" name="answertype900003" value="20">
+  <input type="hidden" name="answer900003" id="answer900003" value="">
+  <div class="marBom30 bTypeWrap" data="900003">
+    <p class="B-info">(1)-(2) 题共用备选答案：</p>
+    <div class="stem_answer padBom20 fs14 padleft20">
+      <div class="clearfix padbtom10"><span class="fl">A.</span>
+        <div class="p_wid805 fr workTextWrap"><p>合成备选答案甲</p></div></div>
+      <div class="clearfix padbtom10"><span class="fl">B.</span>
+        <div class="p_wid805 fr workTextWrap"><p>合成备选答案乙</p></div></div>
+      <div class="clearfix padbtom10"><span class="fl">C.</span>
+        <div class="p_wid805 fr workTextWrap"><p>合成备选答案丙</p></div></div>
+      <div class="clearfix padbtom10"><span class="fl">D.</span>
+        <div class="p_wid805 fr workTextWrap"><p>合成备选答案丁</p></div></div>
+    </div>
+    <div class="B-answer-ct">
+      <p class="B-tit workTextWrap">(1) </p><p>合成小题文字一</p>
+      <div class="B-answerCon">
+        <span data="A">A</span><span data="B">B</span>
+        <span data="C">C</span><span data="D">D</span>
+      </div>
+    </div>
+    <div class="B-answer-ct">
+      <p class="B-tit workTextWrap">(2) </p><p>合成小题文字二</p>
+      <div class="B-answerCon">
+        <span data="A">A</span><span data="B">B</span>
+        <span data="C">C</span><span data="D">D</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="saveBar">
+  <a href="javascript:;" onclick="saveWork();" class="fl" tabindex="0">暂时保存</a>
+</div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * 页面自己的 handler —— 框架【必须借这些函数】回填，不许自己写隐藏域。
+ * 语义逐字照抄真实页面 addChoice / addMultipleChoice / answerContentChange。
+ * ------------------------------------------------------------------ */
+window.__saved = false;
+window.__submitted = false;
+window.__changes = 0;
+
+function answerContentChange() { window.__changes += 1; }
+
+function addChoice(obj) {
+  var qid = this_qid(obj);
+  if (!qid) return;
+  var num = obj.querySelector('.num_option');
+  if (num && num.classList.contains('check_answer')) {
+    num.classList.remove('check_answer');          // 再点一次 = 取消
+  } else {
+    document.querySelectorAll('.choice' + qid).forEach(function (el) {
+      el.classList.remove('check_answer');
+    });
+    if (num) num.classList.add('check_answer');
+  }
+  var content = '';
+  document.querySelectorAll('.choice' + qid).forEach(function (el) {
+    if (el.classList.contains('check_answer')) content += el.getAttribute('data');
+  });
+  var hid = document.getElementById('answer' + qid);
+  if (hid) hid.value = content;
+  answerContentChange();
+}
+
+function addMultipleChoice(obj) {
+  var qid = this_qid(obj);
+  if (!qid) return;
+  var num = obj.querySelector('.num_option_dx');
+  if (num && num.classList.contains('check_answer_dx')) {
+    num.classList.remove('check_answer_dx');
+  } else if (num) {
+    num.classList.add('check_answer_dx');
+  }
+  var content = '';
+  document.querySelectorAll('.choice' + qid).forEach(function (el) {
+    if (el.classList.contains('check_answer_dx')) content += el.getAttribute('data');
+  });
+  var hid = document.getElementById('answer' + qid);
+  if (hid) hid.value = content;
+  answerContentChange();
+}
+
+function this_qid(obj) { return obj.getAttribute('qid') || ''; }
+
+/* B 型题：span 上没有 onclick，靠事件委托（真实页面是 jQuery 绑定） */
+document.addEventListener('click', function (ev) {
+  var sp = ev.target.closest && ev.target.closest('.B-answerCon span[data]');
+  if (!sp) return;
+  var ct = sp.closest('.B-answer-ct');
+  var wrap = sp.closest('.bTypeWrap');
+  if (!ct || !wrap) return;
+  var qid = wrap.getAttribute('data');
+  ct.querySelectorAll('.B-answerCon span').forEach(function (s) {
+    s.classList.remove('check_answer');
+  });
+  sp.classList.add('check_answer');
+  var idx = Array.prototype.indexOf.call(wrap.querySelectorAll('.B-answer-ct'), ct) + 1;
+  var hid = document.getElementById('answer' + qid);
+  var arr = [];
+  wrap.querySelectorAll('.B-answer-ct').forEach(function (c, i) {
+    var on = c.querySelector('.B-answerCon span.check_answer');
+    arr.push({name: i + 1, content: on ? on.getAttribute('data') : ''});
+  });
+  if (hid) hid.value = JSON.stringify(arr);
+  answerContentChange();
+});
+
+function addChoiceKeyDown() {}
+function addMultipleChoiceKeyDown() {}
+
+/* 只暂存，绝不提交 */
+function saveWork() {
+  window.__saved = true;
+  var bar = document.getElementById('saveBar');
+  var tip = document.createElement('span');
+  tip.className = 'save-success';
+  tip.textContent = '保存成功';
+  bar.appendChild(tip);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>仿真课程页（标签切换 / 处理器晚绑定）</title>
+<style>
+  .tab-item { display: inline-block; padding: 4px 10px; cursor: pointer; }
+  .tab-item.current { font-weight: bold; color: #c00; }
+</style>
+</head>
+<body>
+<!--
+  这个夹具复刻真站一个非常坑的时序：
+    「我学的课」这个标签元素**先出现**，它自己的点击处理器**晚 1.2 秒**才绑定。
+  在处理器绑定之前点击 = 完全没反应（不报错、页面也不动）。
+
+  真站实测（2026-10）：
+    1.5s 点一下 → 返回成功，但 current 一直留在「我教的课」，课程卡片一张都不出；
+    2.6s 再点一次 → 才真的切过去（卡片 13 张）。
+
+  所以 `_switch_to_student_courses` 必须「点完确认生效，没生效就再点」，
+  这份夹具就是用来钉住这个行为的：只点一次的实现在这里必然失败。
+-->
+<div class="course-tab">
+  <span class="tab-item current" coursetype="0">我教的课</span>
+  <span class="tab-item" coursetype="1">我学的课</span>
+</div>
+
+<ul id="courseList"></ul>
+<p id="hint">处理器未绑定</p>
+
+<script>
+(function () {
+  window.__handlerReady = false;
+  window.__clicks = 0;          // 真正被处理器接到的点击次数
+  window.__rawClicks = 0;       // 元素上收到的 click 事件（含未绑定时）
+
+  var allTabs = [].slice.call(document.querySelectorAll('.tab-item'));
+  var studentTab = null;
+  allTabs.forEach(function (t) {
+    if ((t.innerText || '').indexOf('我学的课') >= 0) studentTab = t;
+  });
+
+  // 先记一笔「元素被点过」——用来证明「点到了但没人处理」
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList &&
+        e.target.classList.contains('tab-item')) {
+      window.__rawClicks += 1;
+    }
+  }, true);
+
+  setTimeout(function () {
+    window.__handlerReady = true;
+    document.getElementById('hint').textContent = '处理器已绑定';
+    if (!studentTab) { return; }
+    studentTab.addEventListener('click', function () {
+      window.__clicks += 1;
+      allTabs.forEach(function (t) { t.classList.remove('current'); });
+      studentTab.classList.add('current');
+      document.getElementById('courseList').innerHTML = [
+        '检体诊断学', '麻醉学2026', '临床医学导论'
+      ].map(function (n) {
+        return '<li class="course">' + n + '</li>';
+      }).join('');
+    });
+  }, 1200);
+})();
+</script>
+</body>
+</html>

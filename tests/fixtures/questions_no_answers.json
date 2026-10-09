@@ -1,0 +1,128 @@
+[
+  {
+    "qid": "question214133344",
+    "qtype": "single",
+    "number": "1",
+    "stem": "消化性溃疡的疼痛特点是( )",
+    "options": [
+      {
+        "letter": "A",
+        "text": "上腹痛"
+      },
+      {
+        "letter": "B",
+        "text": "剑突下痛"
+      },
+      {
+        "letter": "C",
+        "text": "脐周痛"
+      },
+      {
+        "letter": "D",
+        "text": "上腹部节律性，周期性痛"
+      },
+      {
+        "letter": "E",
+        "text": "下腹痛"
+      }
+    ],
+    "locator": {
+      "index": 0,
+      "sel": "div[id^=question]",
+      "sel_index": 0,
+      "raw_id": "question214133344",
+      "blanks": 0,
+      "has_text_input": false,
+      "has_input": 0
+    },
+    "fp": "94017e0fd4d8f132",
+    "match_options": [],
+    "match_items": [],
+    "review_answer": "",
+    "review_mine": ""
+  },
+  {
+    "qid": "question214133348",
+    "qtype": "single",
+    "number": "5",
+    "stem": "急性胰腺炎患者呕吐后腹痛常可( )",
+    "options": [
+      {
+        "letter": "A",
+        "text": "减轻"
+      },
+      {
+        "letter": "B",
+        "text": "缓解"
+      },
+      {
+        "letter": "C",
+        "text": "加重"
+      },
+      {
+        "letter": "D",
+        "text": "消失"
+      },
+      {
+        "letter": "E",
+        "text": "无变化"
+      }
+    ],
+    "locator": {
+      "index": 4,
+      "sel": "div[id^=question]",
+      "sel_index": 4,
+      "raw_id": "question214133348",
+      "blanks": 0,
+      "has_text_input": false,
+      "has_input": 0
+    },
+    "fp": "ad9f2b179d912e5b",
+    "match_options": [],
+    "match_items": [],
+    "review_answer": "",
+    "review_mine": ""
+  },
+  {
+    "qid": "question214133351",
+    "qtype": "single",
+    "number": "8",
+    "stem": "患者，女，62岁，反复右上腹疼痛，发热伴尿黄4年。2天前又出现右上腹绞痛，发冷、发热、尿黄来诊。下列表现均对本病诊断有意义，但除外( )",
+    "options": [
+      {
+        "letter": "A",
+        "text": "胆囊肿大"
+      },
+      {
+        "letter": "B",
+        "text": "墨菲征阳性"
+      },
+      {
+        "letter": "C",
+        "text": "胆囊点压痛阳性"
+      },
+      {
+        "letter": "D",
+        "text": "巩膜黄染"
+      },
+      {
+        "letter": "E",
+        "text": "季肋点压痛阳性"
+      }
+    ],
+    "locator": {
+      "index": 7,
+      "sel": "div[id^=question]",
+      "sel_index": 7,
+      "raw_id": "question214133351",
+      "blanks": 0,
+      "has_text_input": false,
+      "has_input": 0
+    },
+    "fp": "d86b6ad0a19b1f3a",
+    "match_options": [],
+    "match_items": [],
+    "review_answer": "",
+    "review_mine": ""
+  }
+]

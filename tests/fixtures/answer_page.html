@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+  学习通答题页仿真样本（离线用）。
+  结构与 chaoxing 老版 /work/doWork 页保持一致：
+    .TiMu[data-type][data-questionid] > .Zy_TItle > .clearfix(题干)
+                                       > ul.Zy_ulTop > li > input + a.fl(选项文字)
+  填空题用 input[type=text]，简答题用 textarea。
+  用途：不登录真实账号也能端到端验证「抓题 -> 回填」这条链路。
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>第三章 章节测验</title>
+  <style>
+    body { font-family: "Microsoft YaHei", sans-serif; margin: 20px 40px; }
+    .TiMu { border-bottom: 1px solid #eee; padding: 12px 0; }
+    .Zy_TItle { font-weight: 600; margin-bottom: 8px; }
+    .Zy_TItle .fl { color: #888; font-weight: 400; margin-right: 6px; }
+    ul.Zy_ulTop { list-style: none; padding-left: 8px; }
+    ul.Zy_ulTop > li { margin: 6px 0; }
+    i.fl { font-style: normal; margin-right: 6px; }
+    textarea { width: 60%; height: 90px; }
+    .save-bar { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="mark_item">
+    <h2 id="testTitle">第三章 章节测验</h2>
+  </div>
+
+  <!-- 1. 单选 -->
+  <div class="TiMu" data-type="0" data-questionid="1001">
+    <div class="Zy_TItle">
+      <span class="fl">1.</span>
+      <div class="clearfix">下列哪个不是 Python 的保留字？</div>
+    </div>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A.</i><a class="fl" href="javascript:;">def</a><input type="radio" name="q1001" value="A"></li>
+      <li><i class="fl">B.</i><a class="fl" href="javascript:;">class</a><input type="radio" name="q1001" value="B"></li>
+      <li><i class="fl">C.</i><a class="fl" href="javascript:;">value</a><input type="radio" name="q1001" value="C"></li>
+      <li><i class="fl">D.</i><a class="fl" href="javascript:;">lambda</a><input type="radio" name="q1001" value="D"></li>
+    </ul>
+  </div>
+
+  <!-- 2. 多选 -->
+  <div class="TiMu" data-type="1" data-questionid="1002">
+    <div class="Zy_TItle">
+      <span class="fl">2.</span>
+      <div class="clearfix">以下属于 HTTP 请求方法的有？</div>
+    </div>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A.</i><a class="fl" href="javascript:;">GET</a><input type="checkbox" name="q1002" value="A"></li>
+      <li><i class="fl">B.</i><a class="fl" href="javascript:;">POST</a><input type="checkbox" name="q1002" value="B"></li>
+      <li><i class="fl">C.</i><a class="fl" href="javascript:;">SEND</a><input type="checkbox" name="q1002" value="C"></li>
+      <li><i class="fl">D.</i><a class="fl" href="javascript:;">PUT</a><input type="checkbox" name="q1002" value="D"></li>
+    </ul>
+  </div>
+
+  <!-- 3. 判断 -->
+  <div class="TiMu" data-type="3" data-questionid="1003">
+    <div class="Zy_TItle">
+      <span class="fl">3.</span>
+      <div class="clearfix">TCP 是面向连接的协议。</div>
+    </div>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A.</i><a class="fl" href="javascript:;">正确</a><input type="radio" name="q1003" value="A"></li>
+      <li><i class="fl">B.</i><a class="fl" href="javascript:;">错误</a><input type="radio" name="q1003" value="B"></li>
+    </ul>
+  </div>
+
+  <!-- 4. 填空（两个空） -->
+  <div class="TiMu" data-type="2" data-questionid="1004">
+    <div class="Zy_TItle">
+      <span class="fl">4.</span>
+      <div class="clearfix">HTTP 默认端口是 ______，HTTPS 默认端口是 ______。</div>
+    </div>
+    <div class="fill-box">
+      第1空：<input type="text" name="q1004_1">
+      第2空：<input type="text" name="q1004_2">
+    </div>
+  </div>
+
+  <!-- 5. 简答 -->
+  <div class="TiMu" data-type="4" data-questionid="1005">
+    <div class="Zy_TItle">
+      <span class="fl">5.</span>
+      <div class="clearfix">简述 TCP 三次握手的过程。</div>
+    </div>
+    <textarea name="q1005" placeholder="请输入你的答案"></textarea>
+  </div>
+
+  <!-- 6. 配伍题（B 型题）：一组共享备选 + 3 个小题，data-type=6 -->
+  <div class="TiMu" data-type="6" data-questionid="1006">
+    <div class="Zy_TItle">
+      <span class="fl">6.</span>
+      <div class="clearfix">配伍题（B 型题）</div>
+    </div>
+    <ul class="match-items">
+      <li>1. 入睡困难</li>
+      <li>2. 体温升高</li>
+      <li>3. 血压下降</li>
+    </ul>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A.</i><a class="fl" href="javascript:;">失眠</a><input type="radio" name="q1006_1" value="A"></li>
+      <li><i class="fl">B.</i><a class="fl" href="javascript:;">发热</a><input type="radio" name="q1006_1" value="B"></li>
+      <li><i class="fl">C.</i><a class="fl" href="javascript:;">低血压</a><input type="radio" name="q1006_1" value="C"></li>
+      <li><i class="fl">D.</i><a class="fl" href="javascript:;">心悸</a><input type="radio" name="q1006_1" value="D"></li>
+    </ul>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A.</i><a class="fl" href="javascript:;">失眠</a><input type="radio" name="q1006_2" value="A"></li>
+      <li><i class="fl">B.</i><a class="fl" href="javascript:;">发热</a><input type="radio" name="q1006_2" value="B"></li>
+      <li><i class="fl">C.</i><a class="fl" href="javascript:;">低血压</a><input type="radio" name="q1006_2" value="C"></li>
+      <li><i class="fl">D.</i><a class="fl" href="javascript:;">心悸</a><input type="radio" name="q1006_2" value="D"></li>
+    </ul>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A.</i><a class="fl" href="javascript:;">失眠</a><input type="radio" name="q1006_3" value="A"></li>
+      <li><i class="fl">B.</i><a class="fl" href="javascript:;">发热</a><input type="radio" name="q1006_3" value="B"></li>
+      <li><i class="fl">C.</i><a class="fl" href="javascript:;">低血压</a><input type="radio" name="q1006_3" value="C"></li>
+      <li><i class="fl">D.</i><a class="fl" href="javascript:;">心悸</a><input type="radio" name="q1006_3" value="D"></li>
+    </ul>
+  </div>
+
+  <div class="save-bar">
+    <a href="javascript:;" id="tempsave" class="btn">暂时保存</a>
+    <a href="javascript:;" id="submitBtn" class="btn">提交</a>
+  </div>
+
+  <script>
+    // 模拟学习通前端：点选项时给 li 打上选中标记，方便测试断言
+    window.__matchPicks = {};
+    document.querySelectorAll('.TiMu').forEach(function (item) {
+      item.querySelectorAll('input[type=radio]').forEach(function (inp) {
+        inp.addEventListener('change', function () {
+          // 只清同一组的 li 选中态（配伍题一个容器里有多个 radio 组）
+          var group = item.querySelectorAll('input[name="' + inp.name + '"]');
+          group.forEach(function (g) {
+            if (g.closest('li')) g.closest('li').classList.remove('cur');
+          });
+          if (inp.closest('li')) inp.closest('li').classList.add('cur');
+          window.__matchPicks[inp.name] = inp.value;
+        });
+      });
+      item.querySelectorAll('input[type=checkbox]').forEach(function (inp) {
+        inp.addEventListener('change', function () {
+          inp.closest('li').classList.toggle('cur', inp.checked);
+          window.__matchPicks[inp.name] = inp.checked;
+        });
+      });
+    });
+    window.__saved = false;
+    document.getElementById('tempsave').addEventListener('click', function () {
+      window.__saved = true;
+      document.title = '已暂存';
+    });
+    window.__submitted = false;
+    document.getElementById('submitBtn').addEventListener('click', function () {
+      window.__submitted = true;
+    });
+  </script>
+</body>
+</html>

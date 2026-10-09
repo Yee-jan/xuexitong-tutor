@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+学习通答题页「多形态」仿真夹具。
+
+真实页面上题目容器不止 .TiMu 一种写法，这里把已知的几种形态都放进来，
+用来验证 extract_js.py 的兜底链路（.TiMu -> .question-item/.mark_item -> 通用推断）。
+
+形态 A：老版 /work/doWork，.TiMu + data-type 数字码（主链路）
+形态 B：新版容器 .question-item + .stem / .option-item（无 data-type，靠 class 认）
+形态 C：表格型 / 输入框挨着 label 的紧凑型（无 ul、无 li）
+形态 D：题干只有 .clearfix、外面套了 div[id^=question] 的形态
+形态 E：视觉序号（无文本字面序号）的配伍题
+形态 F：题干里不带字母的选项（值在 <a> 里）
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>作业详情（多形态夹具）</title>
+  <style>
+    .TiMu, .question-item, .mark_item, .exam-question { border: 1px solid #ddd; margin: 12px 0; padding: 8px; }
+    li.cur { background: #eef5ff; }
+  </style>
+</head>
+<body>
+<div id="content">
+  <h1>第三章 测试</h1>
+
+  <!-- ============ 形态 B：.question-item + .stem + .option-item ============ -->
+  <div class="question-item" id="qb1">
+    <div class="stem">B 型组题目：下列哪项是心脏的正常起搏点？</div>
+    <div class="option-item"><input type="radio" name="qb1" value="A" id="qb1a"> <label for="qb1a">A. 窦房结</label></div>
+    <div class="option-item"><input type="radio" name="qb1" value="B" id="qb1b"> <label for="qb1b">B. 房室结</label></div>
+    <div class="option-item"><input type="radio" name="qb1" value="C" id="qb1c"> <label for="qb1c">C. 希氏束</label></div>
+  </div>
+
+  <!-- ============ 形态 C1：表格型，radio 紧挨 label 文本 ============ -->
+  <table class="exam-table">
+    <tr class="exam-question" id="qc1">
+      <td class="question-name">C1 型题目：成人海姆立克急救法的冲击部位是？</td>
+      <td><input type="radio" name="qc1" value="A"><span>上腹部</span></td>
+      <td><input type="radio" name="qc1" value="B"><span>下腹部</span></td>
+      <td><input type="radio" name="qc1" value="C"><span>胸骨下段</span></td>
+    </tr>
+    <tr class="exam-question" id="qc2">
+      <td class="question-name">C2 型多选：以下属于生命体征的有？</td>
+      <td><input type="checkbox" name="qc2" value="A"><span>体温</span></td>
+      <td><input type="checkbox" name="qc2" value="B"><span>脉搏</span></td>
+      <td><input type="checkbox" name="qc2" value="C"><span>血压</span></td>
+    </tr>
+  </table>
+
+  <!-- ============ 形态 D：只有 .clearfix 题干，外层无 .TiMu ============ -->
+  <div id="qd1" class="mark_item">
+    <div class="fl clearfix">D 型题目：判断——心搏骤停后 4 分钟内开始有效心肺复苏存活率最高。</div>
+    <ul>
+      <li><input type="radio" name="qd1" value="true"> 正确</li>
+      <li><input type="radio" name="qd1" value="false"> 错误</li>
+    </ul>
+  </div>
+
+  <!-- ============ 形态 E：配伍题，小题没有文本序号（只有 <i> 里的显示屏序号） ============ -->
+  <div class="TiMu" data-type="6" data-questionid="9001">
+    <div class="Zy_TItle"><div class="clearfix">E 型配伍：请为下列症状配对应疾病</div></div>
+    <div class="zi-ti-list">
+      <div class="ZiTiMu"><i class="serial">1</i><span>入睡困难</span></div>
+      <div class="ZiTiMu"><i class="serial">2</i><span>体温升高</span></div>
+    </div>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A</i><a class="fl">失眠</a><input type="radio" name="q9001_1" value="A"></li>
+      <li><i class="fl">B</i><a class="fl">发热</a><input type="radio" name="q9001_1" value="B"></li>
+      <li><i class="fl">C</i><a class="fl">低血压</a><input type="radio" name="q9001_1" value="C"></li>
+    </ul>
+    <ul class="Zy_ulTop">
+      <li><i class="fl">A</i><a class="fl">失眠</a><input type="radio" name="q9001_2" value="A"></li>
+      <li><i class="fl">B</i><a class="fl">发热</a><input type="radio" name="q9001_2" value="B"></li>
+      <li><i class="fl">C</i><a class="fl">低血压</a><input type="radio" name="q9001_2" value="C"></li>
+    </ul>
+  </div>
+
+  <!-- ============ 形态 F：选项文本在 <a> 里，li 自身没有字母 ============ -->
+  <div class="TiMu" data-type="0" data-questionid="9002">
+    <div class="Zy_TItle"><div class="clearfix">F 型题目：以下哪项不是输血的适应证？</div></div>
+    <ul class="Zy_ulTop">
+      <li><a class="fl">急性大失血</a><input type="radio" name="q9002" value="A"></li>
+      <li><a class="fl">严重贫血</a><input type="radio" name="q9002" value="B"></li>
+      <li><a class="fl">凝血因子缺乏</a><input type="radio" name="q9002" value="C"></li>
+      <li><a class="fl">血容量正常的轻度贫血</a><input type="radio" name="q9002" value="D"></li>
+    </ul>
+  </div>
+
+  <!-- 干扰项：隐藏 input、非题目区域的输入框，都不该被当成题 -->
+  <input type="hidden" name="courseId" value="12345">
+  <input type="text" id="search-box" placeholder="搜索">
+</div>
+
+<script>
+  window.__picks = {};
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t || !t.name) return;
+    window.__picks[t.name] = t.value;
+    var box = t.closest('li') || t.closest('.option-item') || t.closest('td');
+    if (!box) return;
+    var group = t.type === 'radio' ? document.querySelectorAll('input[name="' + t.name + '"]')
+                                   : [t];
+    group.forEach(function (i) {
+      var b = i.closest('li') || i.closest('.option-item') || i.closest('td');
+      if (b) b.classList.remove('cur');
+    });
+    box.classList.add('cur');
+  });
+</script>
+</body>
+</html>
